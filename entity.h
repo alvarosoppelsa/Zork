@@ -4,8 +4,6 @@
 #include <string>
 #include <list>
 
-using namespace std;
-
 enum EntityType
 {
 	ENTITY,
@@ -28,8 +26,8 @@ public:
 	void	ChangeParentTo(Entity* new_parent);
 	bool    Find(Entity* entity) const;
 	Entity* Find(EntityType type) const;
-	Entity* Find(const string& name, EntityType type) const;
-	void	FindAll(EntityType type, list<Entity*>& list_to_fill) const;
+	Entity* Find(const std::string& name, EntityType type) const;
+	void	FindAll(EntityType type, std::list<Entity*>& list_to_fill) const;
 
 public :
 	EntityType type;
@@ -37,7 +35,7 @@ public :
 	std::string description;
 
 	Entity* parent;
-	list<Entity*> container;
+	std::list<Entity*> container;
 };
 
 #endif //__Entity__

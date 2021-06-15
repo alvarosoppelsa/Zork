@@ -7,31 +7,29 @@
 class Room;
 class Item;
 
-using namespace std;
-
 class Creature : public Entity
 {
 public:
 	Creature(const char* name, const char* description, Room* room);
 	~Creature();
 
-	virtual bool Go(const vector<string>& args);
-	virtual void Look(const vector<string>& args) const;
-	virtual bool Take(const vector<string>& args);
-	virtual bool Drop(const vector<string>& args);
+	virtual bool Go(const std::vector<std::string>& args);
+	virtual void Look(const std::vector<std::string>& args) const;
+	virtual bool Take(const std::vector<std::string>& args);
+	virtual bool Drop(const std::vector<std::string>& args);
 	virtual void Inventory() const;
-	virtual bool Equip(const vector<string>& args);
-	virtual bool UnEquip(const vector<string>& args);
+	virtual bool Equip(const std::vector<std::string>& args);
+	virtual bool UnEquip(const std::vector<std::string>& args);
 	virtual bool AutoEquip();
-	virtual bool Lock(const vector<string>& args);
-	virtual bool UnLock(const vector<string>& args);
+	virtual bool Lock(const std::vector<std::string>& args);
+	virtual bool UnLock(const std::vector<std::string>& args);
 	virtual void Tick();
 
-	virtual bool Attack(const vector<string>& args);
+	virtual bool Attack(const std::vector<std::string>& args);
 	virtual int MakeAttack();
 	virtual int ReceiveAttack(int damage);
 	virtual void Die();
-	virtual bool Loot(const vector<string>& args);
+	virtual bool Loot(const std::vector<std::string>& args);
 	virtual void Stats() const;
 
 	Room* GetRoom() const;

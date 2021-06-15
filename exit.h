@@ -6,8 +6,6 @@
 
 class Room;
 
-using namespace std;
-
 class Exit : public Entity
 {
 public:
@@ -16,14 +14,14 @@ public:
 
 	void Look() const;
 
-	const string& GetNameFrom(const Room* room) const;
+	const std::string& GetNameFrom(const Room* room) const;
 	Room* GetDestinationFrom(const Room* room) const;
 
 public :
 	bool one_way;
 	bool closed;
 	bool locked;
-	string opposite_name;
+	std::string opposite_name;
 	Room* destination;
 	Entity* key;
 };

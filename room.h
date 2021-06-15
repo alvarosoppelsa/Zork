@@ -8,8 +8,6 @@
 class Exit;
 class Item;
 
-using namespace std;
-
 class Room : public Entity
 {
 public:
@@ -18,7 +16,7 @@ public:
 
 	void Look() const;
 
-	Exit* GetExit(const string& direction) const;
+	Exit* GetExit(const std::string& direction) const;
 
 public :
 };

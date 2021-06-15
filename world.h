@@ -7,8 +7,6 @@
 
 #define TICK_FREQUENCY 0.5f
 
-using namespace std;
-
 class Entity;
 class Player;
 
@@ -19,14 +17,14 @@ public :
 	World();
 	~World();
 
-	bool Tick(vector<string>& args);
-	bool ParseCommand(vector<string>& args);
+	bool Tick(std::vector<std::string>& args);
+	bool ParseCommand(std::vector<std::string>& args);
 	void GameLoop();
 
 private:
 
 	clock_t tick_timer;
-	list<Entity*> entities;
+	std::list<Entity*> entities;
 	Player* player;
 };
 

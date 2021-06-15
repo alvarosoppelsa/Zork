@@ -19,17 +19,17 @@ Item::~Item()
 // ----------------------------------------------------
 void Item::Look() const
 {
-	cout << "\n" << name << "\n";
-	cout << description << "\n";
+	std::cout << "\n" << name << "\n";
+	std::cout << description << "\n";
 
-	list<Entity*> stuff;
+	std::list<Entity*> stuff;
 	FindAll(ITEM, stuff);
 
 	if(stuff.size() > 0)
 	{
-		cout << "It contains: " << "\n";
-		for(list<Entity*>::const_iterator it = stuff.begin(); it != stuff.cend(); ++it)
-			cout << (*it)->name << "\n";
+		std::cout << "It contains: " << "\n";
+		for(std::list<Entity*>::const_iterator it = stuff.begin(); it != stuff.cend(); ++it)
+			std::cout << (*it)->name << "\n";
 	}
 }
 

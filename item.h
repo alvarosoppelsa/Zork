@@ -6,8 +6,6 @@
 
 class Room;
 
-using namespace std;
-
 enum ItemType
 {
 	COMMON,

@@ -3,26 +3,24 @@
 
 #include "creature.h"
 
-using namespace std;
-
 class Player : public Creature
 {
 public:
 	Player(const char* name, const char* description, Room* room);
 	~Player();
 
-	bool Go(const vector<string>& args);
-	void Look(const vector<string>& args) const;
-	bool Take(const vector<string>& args);
-	bool Drop(const vector<string>& args);
+	bool Go(const std::vector<std::string>& args);
+	void Look(const std::vector<std::string>& args) const;
+	bool Take(const std::vector<std::string>& args);
+	bool Drop(const std::vector<std::string>& args);
 	void Inventory() const;
-	bool Equip(const vector<string>& args);
-	bool UnEquip(const vector<string>& args);
-	bool Examine(const vector<string>& args) const;
-	bool Attack(const vector<string>& args);
-	bool Loot(const vector<string>& args);
-	bool Lock(const vector<string>& args);
-	bool UnLock(const vector<string>& args);
+	bool Equip(const std::vector<std::string>& args);
+	bool UnEquip(const std::vector<std::string>& args);
+	bool Examine(const std::vector<std::string>& args) const;
+	bool Attack(const std::vector<std::string>& args);
+	bool Loot(const std::vector<std::string>& args);
+	bool Lock(const std::vector<std::string>& args);
+	bool UnLock(const std::vector<std::string>& args);
 
 public :
 

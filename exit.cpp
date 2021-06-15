@@ -22,12 +22,12 @@ Exit::~Exit()
 // ----------------------------------------------------
 void Exit::Look() const
 {
-	cout << name << " to " << opposite_name << "\n";
-	cout << description << "\n";
+	std::cout << name << " to " << opposite_name << "\n";
+	std::cout << description << "\n";
 }
 
 // ----------------------------------------------------
-const string& Exit::GetNameFrom(const Room* room) const
+const std::string& Exit::GetNameFrom(const Room* room) const
 {
 	if(room == parent)
 		return name;

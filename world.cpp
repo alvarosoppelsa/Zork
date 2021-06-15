@@ -65,14 +65,14 @@ World::World()
 // ----------------------------------------------------
 World::~World()
 {
-	for(list<Entity*>::iterator it = entities.begin(); it != entities.end(); ++it)
+	for(std::list<Entity*>::iterator it = entities.begin(); it != entities.end(); ++it)
 		delete *it;
 
 	entities.clear();
 }
 
 // ----------------------------------------------------
-bool World::Tick(vector<string>& args)
+bool World::Tick(std::vector<std::string>& args)
 {
 	bool ret = true;
 
@@ -91,7 +91,7 @@ void World::GameLoop()
 
 	if((now - tick_timer) / CLOCKS_PER_SEC > TICK_FREQUENCY)
 	{
-		for(list<Entity*>::iterator it = entities.begin(); it != entities.end(); ++it)
+		for(std::list<Entity*>::iterator it = entities.begin(); it != entities.end(); ++it)
 			(*it)->Tick();
 
 		tick_timer = now;
@@ -99,7 +99,7 @@ void World::GameLoop()
 }
 
 // ----------------------------------------------------
-bool World::ParseCommand(vector<string>& args)
+bool World::ParseCommand(std::vector<std::string>& args)
 {
 	bool ret = true;
 

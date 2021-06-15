@@ -19,8 +19,8 @@ Entity::~Entity()
 // ----------------------------------------------------
 void Entity::Look() const
 {
-	cout << name << "\n";
-	cout << description << "\n";
+	std::cout << name << "\n";
+	std::cout << description << "\n";
 }
 
 // ----------------------------------------------------
@@ -42,7 +42,7 @@ void Entity::ChangeParentTo(Entity* new_parent)
 // ----------------------------------------------------
 bool Entity::Find(Entity* entity) const
 {
-	for(list<Entity*>::const_iterator it = container.begin(); it != container.cend(); ++it)
+	for(std::list<Entity*>::const_iterator it = container.begin(); it != container.cend(); ++it)
 	{
 		if((*it) == entity)
 			return true;
@@ -54,7 +54,7 @@ bool Entity::Find(Entity* entity) const
 // ----------------------------------------------------
 Entity* Entity::Find(EntityType type) const
 {
-	for(list<Entity*>::const_iterator it = container.begin(); it != container.cend(); ++it)
+	for(std::list<Entity*>::const_iterator it = container.begin(); it != container.cend(); ++it)
 	{
 		if((*it)->type == type)
 			return *it;
@@ -64,9 +64,9 @@ Entity* Entity::Find(EntityType type) const
 }
 
 // ----------------------------------------------------
-Entity* Entity::Find(const string& name, EntityType type) const
+Entity* Entity::Find(const std::string& name, EntityType type) const
 {
-	for(list<Entity*>::const_iterator it = container.begin(); it != container.cend(); ++it)
+	for(std::list<Entity*>::const_iterator it = container.begin(); it != container.cend(); ++it)
 	{
 		if((*it)->type == type)
 		{
@@ -79,9 +79,9 @@ Entity* Entity::Find(const string& name, EntityType type) const
 }
 
 // ----------------------------------------------------
-void Entity::FindAll(EntityType type, list<Entity*>& list_to_fill) const
+void Entity::FindAll(EntityType type, std::list<Entity*>& list_to_fill) const
 {
-	for(list<Entity*>::const_iterator it = container.begin(); it != container.cend(); ++it)
+	for(std::list<Entity*>::const_iterator it = container.begin(); it != container.cend(); ++it)
 	{
 		if((*it)->type == type)
 			list_to_fill.push_back(*it);
