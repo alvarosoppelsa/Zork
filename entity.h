@@ -29,7 +29,8 @@ public:
 	Entity* Find(const std::string& name, EntityType type) const;
 	void	FindAll(EntityType type, std::list<Entity*>& list_to_fill) const;
 
-public :
+    std::string getName() { return name; }
+public:
 	EntityType type;
 	std::string name;
 	std::string description;

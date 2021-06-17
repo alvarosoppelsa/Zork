@@ -54,7 +54,7 @@ bool Player::Go(const std::vector<std::string>& args)
 		return false;
 	}
 
-	if(exit->locked)
+	if(exit->isLocked())
 	{
 		std::cout << "\nThat exit is locked.\n";
 		return false;
@@ -195,17 +195,17 @@ bool Player::Equip(const std::vector<std::string>& args)
 		return false;
 	}
 
-	switch(item->item_type)
+	switch(item->getItemType())
 	{
-		case WEAPON:
+	case WEAPON:
 		weapon = item;
 		break;
 
-		case ARMOUR:
+	case TOOL:
 		armour = item;
 		break;
 
-		default:
+	default:
 		std::cout << "\n" << item->name << " cannot be equipped.\n";
 		return false;
 	}
@@ -328,7 +328,7 @@ bool Player::Lock(const std::vector<std::string>& args)
 		return false;
 	}
 
-	if(exit->locked == true)
+	if(exit->isLocked())
 	{
 		std::cout << "\nThat exit is already locked.\n";
 		return false;
@@ -342,7 +342,7 @@ bool Player::Lock(const std::vector<std::string>& args)
 		return false;
 	}
 
-	if(exit->key != item)
+	if(exit->getKey() != item)
 	{
 		std::cout << "\nItem '" << item->name << "' is not the key for " << exit->GetNameFrom((Room*)parent) << ".\n";
 		return false;
@@ -350,7 +350,7 @@ bool Player::Lock(const std::vector<std::string>& args)
 
 	std::cout << "\nYou lock " << exit->GetNameFrom((Room*)parent) << "...\n";
 
-	exit->locked = true;
+	exit->lock();
 
 	return true;
 }
@@ -369,7 +369,7 @@ bool Player::UnLock(const std::vector<std::string>& args)
 		return false;
 	}
 
-	if(exit->locked == false)
+	if(!exit->isLocked())
 	{
 		std::cout << "\nThat exit is not locked.\n";
 		return false;
@@ -383,7 +383,7 @@ bool Player::UnLock(const std::vector<std::string>& args)
 		return false;
 	}
 
-	if(exit->key != item)
+	if(exit->getKey() != item)
 	{
 		std::cout << "\nKey '" << item->name << "' is not the key for " << exit->GetNameFrom((Room*)parent) << ".\n";
 		return false;
@@ -391,7 +391,7 @@ bool Player::UnLock(const std::vector<std::string>& args)
 
 	std::cout << "\nYou unlock " << exit->GetNameFrom((Room*)parent) << "...\n";
 
-	exit->locked = false;
+	exit->unlock();
 
 	return true;
 }

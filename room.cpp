@@ -6,10 +6,11 @@
 #include "room.h"
 
 // ----------------------------------------------------
-Room::Room(const char* title, const char* description) :
+Room::Room(const char* title, const char* description, bool darkness) :
 Entity(title, description, NULL)
 {
 	type = ROOM;
+    darkness_ = darkness;
 }
 
 // ----------------------------------------------------
@@ -29,17 +30,19 @@ void Room::Look() const
 		if((*it)->type == EXIT)
 		{
 			Exit* ex = (Exit*)*it;
-			std::cout << "\nDirection (" << ex->GetNameFrom(this) << ") you see " << ex->GetDestinationFrom(this)->name;
+			std::cout << "\nDirection (" << ex->GetNameFrom(this) << ") you see " << ex->GetDestinationFrom(this)->getName();
 		}
 	}
 
 	// List items --
-	for(std::list<Entity*>::const_iterator it = container.begin(); it != container.cend(); ++it)
+    for(std::list<Entity*>::const_iterator it = container.begin(); it != container.cend(); ++it)
 	{
+        if (darkness_) break;
+
 		if((*it)->type == ITEM)
 		{
 			Item* item = (Item*)*it;
-			std::cout << "\nThere is an item here: " << item->name;
+			std::cout << "\nThere is an item here: " << item->getName();
 		}
 	}
 
@@ -49,7 +52,7 @@ void Room::Look() const
 		if((*it)->type == CREATURE)
 		{
 			Creature* cr = (Creature*)*it;
-			std::cout << "\nThere is someone else here: " << cr->name;
+			std::cout << "\nThere is someone else here: " << cr->getName();
 			if(cr->IsAlive() == false)
 				std::cout << " (dead)";
 		}

@@ -5,11 +5,11 @@
 #include "item.h"
 
 // ----------------------------------------------------
-Item::Item(const char* title, const char* description, Entity* parent, ItemType item_type) :
-Entity(title, description, parent), item_type(item_type)
+Item::Item(const char* title, const char* description, Entity* parent, ItemType item_type, bool hidden_) :
+Entity(title, description, parent), item_type_(item_type)
 {
 	type = ITEM;
-	min_value = max_value = 0;
+	min_value_ = max_value_ = 0;
 }
 
 // ----------------------------------------------------
@@ -36,5 +36,5 @@ void Item::Look() const
 // ----------------------------------------------------
 int Item::GetValue() const
 {
-	return Roll(min_value, max_value);
+	return Roll(min_value_, max_value_);
 }

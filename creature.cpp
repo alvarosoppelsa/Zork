@@ -10,7 +10,7 @@ Creature::Creature(const char* title, const char* description, Room* room) :
 Entity(title, description, (Entity*)room)
 {
 	type = CREATURE;
-	hit_points = 1;
+	hit_points_ = 1;
 	min_damage = max_damage = min_protection = max_protection = 0;
 	weapon = armour = NULL;
 	combat_target = NULL;
@@ -134,10 +134,6 @@ bool Creature::Equip(const std::vector<std::string>& args)
 		weapon = item;
 		break;
 
-		case ARMOUR:
-		armour = item;
-		break;
-
 		default:
 		return false;
 	}
@@ -186,9 +182,9 @@ bool Creature::AutoEquip()
 	{
 		Item* i = (Item*)(*it);
 
-		if(i->item_type == WEAPON)
+		if(i->getItemType() == WEAPON)
 			weapon = i;
-		if(i->item_type == ARMOUR)
+		if(i->getItemType() == TOOL)
 			armour = i;
 	}
 
@@ -203,18 +199,18 @@ bool Creature::Lock(const std::vector<std::string>& args)
 
 	Exit* exit = GetRoom()->GetExit(args[1]);
 
-	if(exit == NULL || exit->locked == true)
+	if(exit == NULL || exit->isLocked())
 		return false;
 
 	Item* item = (Item*)Find(args[3], ITEM);
 
-	if(item == NULL || exit->key != item)
+	if(item == NULL || exit->getKey() != item)
 		return false;
 
 	if(PlayerInRoom())
 		std::cout << "\n" << name << "locks " << exit->GetNameFrom((Room*)parent) << "...\n";
 
-	exit->locked = true;
+	exit->lock();
 
 	return true;
 }
@@ -227,18 +223,18 @@ bool Creature::UnLock(const std::vector<std::string>& args)
 
 	Exit* exit = GetRoom()->GetExit(args[1]);
 
-	if(exit == NULL || exit->locked == false)
+	if(exit == NULL || !exit->isLocked())
 		return false;
 
 	Item* item = (Item*)Find(args[3], ITEM);
 
-	if(item == NULL || exit->key != item)
+	if(item == NULL || exit->getKey() != item)
 		return false;
 
 	if(PlayerInRoom())
 		std::cout << "\n" << name << "unlocks " << exit->GetNameFrom((Room*) parent) << "...\n";
 
-	exit->locked = false;
+	exit->unlock();
 
 	return true;
 }
@@ -277,7 +273,7 @@ bool Creature::PlayerInRoom() const
 // ----------------------------------------------------
 bool Creature::IsAlive() const
 {
-	return hit_points > 0;
+	return hit_points_ > 0;
 }
 
 // ----------------------------------------------------
@@ -334,7 +330,7 @@ int Creature::ReceiveAttack(int damage)
 	int prot = (armour) ? armour->GetValue() : Roll(min_protection, max_protection);
 	int received = damage - prot;
 
-	hit_points -= received;
+	hit_points_ -= received;
 
 	if(PlayerInRoom())
 		std::cout << name << " is hit for " << received << " damage (" << prot << " blocked) \n";
@@ -377,10 +373,10 @@ bool Creature::Loot(const std::vector<std::string>& args)
 // ----------------------------------------------------
 void Creature::Stats() const
 {
-	std::cout << "\nHit Points: " << hit_points;
+	std::cout << "\nHit Points: " << hit_points_;
 	std::cout << "\nAttack: (" << ((weapon) ? weapon->name : "no weapon") << ") ";
-	std::cout << ((weapon) ? weapon->min_value : min_damage) << "-" << ((weapon) ? weapon->max_value : max_damage);
+	std::cout << ((weapon) ? weapon->getMinValue() : min_damage) << "-" << ((weapon) ? weapon->getMaxValue() : max_damage);
 	std::cout << "\nProtection: (" << ((armour) ? armour->name : "no armour") << ") ";
-	std::cout << ((armour) ? armour->min_value : min_protection) << "-" << ((armour) ? armour->max_value : max_protection);
+	std::cout << ((armour) ? armour->getMinValue() : min_protection) << "-" << ((armour) ? armour->getMaxValue() : max_protection);
 	std::cout << "\n";
 }

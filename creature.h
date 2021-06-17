@@ -36,9 +36,19 @@ public:
 	bool PlayerInRoom() const;
 	bool IsAlive() const;
 
-public :
+    int getHitPoints() const { return hit_points_; }
+    int getMinDamage() const { return min_damage; }
+    int getMaxDamage() const { return max_damage; }
+    int getMinProtection() const { return min_protection; }
+    int getMaxProtection() const { return max_protection; }
+    Creature* getCombatTarget() const { return combat_target; }
+    Item* getWeapon() const { return weapon; }
+    Item* getArmourWeapon() const { return armour; }
 
-	int hit_points;
+    void setHitPoints(int hit_points) { hit_points_ = hit_points; }
+
+protected:
+	int hit_points_;
 	int min_damage;
 	int max_damage;
 	int min_protection;
