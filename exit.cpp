@@ -5,11 +5,11 @@
 // ----------------------------------------------------
 Exit::Exit(const char* name, const char* opposite_name, const char* description, Room* origin, Room* destination, bool one_way) :
 Entity(name, description, (Entity*)origin),
-closed(false), locked(false), key(NULL), one_way(one_way), destination(destination), opposite_name(opposite_name)
+closed_(false), locked_(false), key_(NULL), one_way_(one_way), destination_(destination), opposite_name_(opposite_name)
 {
 	type = EXIT;
 
-	if(one_way == false)
+	if(!one_way)
 		destination->container.push_back(this);
 }
 
@@ -22,17 +22,17 @@ Exit::~Exit()
 // ----------------------------------------------------
 void Exit::Look() const
 {
-	cout << name << " to " << opposite_name << "\n";
-	cout << description << "\n";
+	std::cout << "\n" << name << " to " << opposite_name_ << "\n";
+	std::cout << description << "\n";
 }
 
 // ----------------------------------------------------
-const string& Exit::GetNameFrom(const Room* room) const
+const std::string& Exit::GetNameFrom(const Room* room) const
 {
 	if(room == parent)
 		return name;
-	if(room == destination)
-		return opposite_name;
+	if(room == destination_)
+		return opposite_name_;
 
 	return name; // error ?
 }
@@ -40,10 +40,10 @@ const string& Exit::GetNameFrom(const Room* room) const
 // ----------------------------------------------------
 Room* Exit::GetDestinationFrom(const Room* room) const
 {
-	if(room == parent)
-		return destination;
-	if(room == destination)
-		return (Room*) parent;
+    if (room == parent)
+        return destination_;
+    if (room == destination_)
+        return (Room*)parent;
 
-	return NULL;
+    return NULL;
 }

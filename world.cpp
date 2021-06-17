@@ -14,65 +14,63 @@ World::World()
 	tick_timer = clock();
 
 	// Rooms ----
-	Room* forest = new Room("Forest", "You are surrounded by tall trees. It feels like a huge forest someone could get lost easily.");
-	Room* house = new Room("House", "You are inside a beautiful but small white house.");
-	Room* basement = new Room("Basement", "The basement features old furniture and dim light.");
+	Room* crew_rest   = new Room("Crew bedrooms","It's all dark here!", true);
+	Room* hallway     = new Room("Hallway", "Can't see anyone. Something is not right...");
+	Room* warehouse   = new Room("Warehouse", "Maybe I can find some useful stuff");
+    Room* engine      = new Room("Engine Room", "I hate the smell of the engine");
+    Room* control     = new Room("Control", "");
+    Room* space       = new Room("Space", "");
 
-	Exit* ex1 = new Exit("west", "east", "Little path", house, forest);
-	Exit* ex2 = new Exit("down", "up", "Stairs", house, basement);
-	ex2->locked = true;
+	Exit* ex1 = new Exit("forward", "back", "A door with a faint light on it", crew_rest, hallway);
+	Exit* ex2 = new Exit("left", "right", "Someone left this open", hallway, warehouse);
+    Exit* ex3 = new Exit("forward", "back", "An electric door... without power will be impossible to open", hallway, control, true);
+    ex3->lock();
+    Exit* ex4 = new Exit("right", "left", "This door always stucks", hallway, engine);
+    ex4->lock();
+    Exit* ex5 = new Exit("hatch", "control", "I don't want to open that", control, space);
+    ex5->lock();
 
-	entities.push_back(forest);
-	entities.push_back(house);
-	entities.push_back(basement);
+	entities.push_back(crew_rest);
+	entities.push_back(hallway);
+	entities.push_back(warehouse);
+    entities.push_back(engine);
+    entities.push_back(control);
 
 	entities.push_back(ex1);
 	entities.push_back(ex2);
-
+    entities.push_back(ex3);
+    entities.push_back(ex4);
+    /*
 	// Creatures ----
 	Creature* butler = new Creature("Butler", "It's James, the house Butler.", house);
 	butler->hit_points = 10;
 
 	entities.push_back(butler);
-
+    */
 	// Items -----
-	Item* mailbox = new Item("Mailbox", "Looks like it might contain something.", house);
-	Item* key = new Item("Key", "Old iron key.", mailbox);
-	ex2->key = key;
-
-	Item* sword = new Item("Sword", "A simple old and rusty sword.", forest, WEAPON);
-	sword->min_value = 2;
-	sword->max_value = 6;
-
-	Item* sword2(sword);
-	sword2->parent = butler;
-
-	Item* shield = new Item("Shield", "An old wooden shield.", butler, ARMOUR);
-	shield->min_value = 1;
-	shield->max_value = 3;
-	butler->AutoEquip();
-
-	entities.push_back(mailbox);
-	entities.push_back(sword);
-	entities.push_back(shield);
+	Item* backpack = new Item("Backpack", "My old backpack", crew_rest);
+    Item* flashlight = new Item("Flashlight", "This could help me to see in dark places", warehouse, TOOL);
+    
+    entities.push_back(backpack);
+    entities.push_back(flashlight);
 
 	// Player ----
-	player = new Player("Hero", "You are an awesome adventurer!", forest);
-	player->hit_points = 25;
+	player = new Player("Lieutenant E.R.", "You better figure it out whats going on here", crew_rest);
+	player->setHitPoints(25);
 	entities.push_back(player);
 }
 
 // ----------------------------------------------------
 World::~World()
 {
-	for(list<Entity*>::iterator it = entities.begin(); it != entities.end(); ++it)
+	for(std::list<Entity*>::iterator it = entities.begin(); it != entities.end(); ++it)
 		delete *it;
 
 	entities.clear();
 }
 
 // ----------------------------------------------------
-bool World::Tick(vector<string>& args)
+bool World::Tick(std::vector<std::string>& args)
 {
 	bool ret = true;
 
@@ -91,7 +89,7 @@ void World::GameLoop()
 
 	if((now - tick_timer) / CLOCKS_PER_SEC > TICK_FREQUENCY)
 	{
-		for(list<Entity*>::iterator it = entities.begin(); it != entities.end(); ++it)
+		for(std::list<Entity*>::iterator it = entities.begin(); it != entities.end(); ++it)
 			(*it)->Tick();
 
 		tick_timer = now;
@@ -99,7 +97,7 @@ void World::GameLoop()
 }
 
 // ----------------------------------------------------
-bool World::ParseCommand(vector<string>& args)
+bool World::ParseCommand(std::vector<std::string>& args)
 {
 	bool ret = true;
 

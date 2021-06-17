@@ -4,12 +4,10 @@
 #include <string>
 #include <vector>
 
-using namespace std;
-
-bool Same(const string& a, const string& b);
-bool Same(const char* a, const string& b);
-bool Same(const string& a, const char* b);
+bool Same(const std::string& a, const std::string& b);
+bool Same(const char* a, const std::string& b);
+bool Same(const std::string& a, const char* b);
 int Roll(int min, int max);
-void Tokenize(const string& line, vector<string>& arguments);
+void Tokenize(const std::string& line, std::vector<std::string>& arguments);
 
 #endif //__Globals__

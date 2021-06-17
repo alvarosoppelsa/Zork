@@ -5,8 +5,6 @@
 #include "globals.h"
 #include "world.h"
 
-using namespace std;
-
 #define BACKSPACE "\033[D\033[K"
 
 #define WHITE_ "\033[1;36m"
@@ -16,12 +14,12 @@ using namespace std;
 int main()
 {
 	char key;
-	string player_input;
-	vector<string> args;
+	std::string player_input;
+	std::vector<std::string> args;
 	args.reserve(10);
 
-	cout << WHITE_ "Welcome to MyZork!\n" _WHITE;
-	cout << "----------------\n";
+	std::cout << WHITE_ "Welcome to MyZork!\n" _WHITE;
+	std::cout << "----------------\n";
 
 	World my_world;
 
@@ -37,16 +35,16 @@ int main()
 				if(player_input.length() > 0)
 				{
 					player_input.pop_back();
-					//cout << BACKSPACE;
-					cout << '\b';
-					cout << " ";
-					cout << '\b';
+					//std::cout << BACKSPACE;
+					std::cout << '\b';
+					std::cout << " ";
+					std::cout << '\b';
 				}
 			}
 			else if(key != '\r') // return
 			{
 				player_input += key;
-				cout << key;
+				std::cout << key;
 			}
 			else
 				Tokenize(player_input, args);
@@ -56,16 +54,16 @@ int main()
 			break;
 
 		if(my_world.Tick(args) == false)
-			cout << "\nSorry, I do not understand your command.\n";
+			std::cout << "\nSorry, I do not understand your command.\n";
 
 		if(args.size() > 0)
 		{
 			args.clear();
 			player_input = "";
-			cout << "> ";
+			std::cout << "> ";
 		}
 	}
 
-	cout << "\nThanks for playing, Bye!\n";
+	std::cout << "\nThanks for playing, Bye!\n";
 	return 0;
 }
