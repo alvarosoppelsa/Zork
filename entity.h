@@ -29,14 +29,19 @@ public:
 	Entity* Find(const std::string& name, EntityType type) const;
 	void	FindAll(EntityType type, std::list<Entity*>& list_to_fill) const;
 
-    std::string getName() { return name; }
-public:
-	EntityType type;
-	std::string name;
-	std::string description;
+    std::string getName() const { return name_; }
+    std::string getDescription() const { return description_; }
+    EntityType getType() const { return type_; }
+    std::list<Entity*> getContainerRef() const { return container_; }
+    Entity* getParentRef() const { return parent_; }
 
-	Entity* parent;
-	std::list<Entity*> container;
+    void setType(EntityType type) { type_ = type; }
+private:
+	EntityType type_;
+	std::string name_;
+    std::string description_;
+	Entity* parent_;
+	std::list<Entity*> container_;
 };
 
 #endif //__Entity__

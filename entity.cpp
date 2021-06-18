@@ -4,12 +4,12 @@
 
 // ----------------------------------------------------
 Entity::Entity(const char* name, const char* description, Entity* parent = NULL) :
-name(name), description(description), parent(parent)
+name_(name), description_(description), parent_(parent)
 {
-	type = ENTITY;
+	type_ = ENTITY;
 
 	if(parent != NULL)
-		parent->container.push_back(this);
+		parent->container_.push_back(this);
 }
 
 // ----------------------------------------------------
@@ -19,8 +19,8 @@ Entity::~Entity()
 // ----------------------------------------------------
 void Entity::Look() const
 {
-	std::cout << name << "\n";
-	std::cout << description << "\n";
+	std::cout << name_ << "\n";
+	std::cout << description_ << "\n";
 }
 
 // ----------------------------------------------------
@@ -30,19 +30,19 @@ void Entity::Tick()
 // ----------------------------------------------------
 void Entity::ChangeParentTo(Entity* new_parent)
 {
-	if(parent != NULL)
-		parent->container.remove(this);
+	if(parent_ != NULL)
+        parent_->container_.remove(this);
 
-	parent = new_parent;
+	parent_ = new_parent;
 
-	if(parent != NULL)
-		parent->container.push_back(this);
+	if(parent_ != NULL)
+		parent_->container_.push_back(this);
 }
 
 // ----------------------------------------------------
 bool Entity::Find(Entity* entity) const
 {
-	for(std::list<Entity*>::const_iterator it = container.begin(); it != container.cend(); ++it)
+	for(std::list<Entity*>::const_iterator it = container_.begin(); it != container_.cend(); ++it)
 	{
 		if((*it) == entity)
 			return true;
@@ -54,9 +54,9 @@ bool Entity::Find(Entity* entity) const
 // ----------------------------------------------------
 Entity* Entity::Find(EntityType type) const
 {
-	for(std::list<Entity*>::const_iterator it = container.begin(); it != container.cend(); ++it)
+	for(std::list<Entity*>::const_iterator it = container_.begin(); it != container_.cend(); ++it)
 	{
-		if((*it)->type == type)
+		if((*it)->type_ == type)
 			return *it;
 	}
 
@@ -66,11 +66,11 @@ Entity* Entity::Find(EntityType type) const
 // ----------------------------------------------------
 Entity* Entity::Find(const std::string& name, EntityType type) const
 {
-	for(std::list<Entity*>::const_iterator it = container.begin(); it != container.cend(); ++it)
+	for(std::list<Entity*>::const_iterator it = container_.begin(); it != container_.cend(); ++it)
 	{
-		if((*it)->type == type)
+		if((*it)->type_ == type)
 		{
-			if(Same((*it)->name, name))
+			if(Same((*it)->name_, name))
 				return *it;
 		}
 	}
@@ -81,9 +81,9 @@ Entity* Entity::Find(const std::string& name, EntityType type) const
 // ----------------------------------------------------
 void Entity::FindAll(EntityType type, std::list<Entity*>& list_to_fill) const
 {
-	for(std::list<Entity*>::const_iterator it = container.begin(); it != container.cend(); ++it)
+	for(std::list<Entity*>::const_iterator it = container_.begin(); it != container_.cend(); ++it)
 	{
-		if((*it)->type == type)
+		if((*it)->type_ == type)
 			list_to_fill.push_back(*it);
 	}
 }

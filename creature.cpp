@@ -9,7 +9,7 @@
 Creature::Creature(const char* title, const char* description, Room* room) :
 Entity(title, description, (Entity*)room)
 {
-	type = CREATURE;
+	setType(CREATURE);
 	hit_points_ = 1;
 	min_damage = max_damage = min_protection = max_protection = 0;
 	weapon = armour = NULL;
@@ -25,13 +25,13 @@ void Creature::Look(const std::vector<std::string>& args) const
 {
 	if(IsAlive())
 	{
-		std::cout << name << "\n";
-		std::cout << description << "\n";
+		std::cout << getName() << "\n";
+		std::cout << getDescription() << "\n";
 	}
 	else
 	{
-		std::cout << name << "'s corpse\n";
-		std::cout << "Here lies dead: " << description << "\n";
+		std::cout << getName() << "'s corpse\n";
+		std::cout << "Here lies dead: " << getDescription() << "\n";
 	}
 }
 
@@ -47,9 +47,9 @@ bool Creature::Go(const std::vector<std::string>& args)
 		return false;
 
 	if(PlayerInRoom())
-		std::cout << name << "goes " << args[1] << "...\n";
+		std::cout << getName() << "goes " << args[1] << "...\n";
 
-	ChangeParentTo(exit->GetDestinationFrom((Room*) parent));
+	ChangeParentTo(exit->GetDestinationFrom((Room*) getParentRef()));
 
 	return true;
 }
@@ -60,7 +60,7 @@ bool Creature::Take(const std::vector<std::string>& args)
 	if(!IsAlive())
 		return false;
 
-	Item* item = (Item*)parent->Find(args[1], ITEM);
+	Item* item = (Item*)getParentRef()->Find(args[1], ITEM);
 
 	if(args.size() > 1)
 	{
@@ -77,7 +77,7 @@ bool Creature::Take(const std::vector<std::string>& args)
 			return false;
 
 		if(PlayerInRoom())
-			std::cout << name << " looks into " << item->name << "...\n";
+			std::cout << getName() << " looks into " << item->getName() << "...\n";
 
 		item = subitem;
 	}
@@ -86,7 +86,7 @@ bool Creature::Take(const std::vector<std::string>& args)
 		return false;
 
 	if(PlayerInRoom())
-		std::cout << name << " takes " << item->name << ".\n";
+		std::cout << getName() << " takes " << item->getName() << ".\n";
 
 	item->ChangeParentTo(this);
 
@@ -101,19 +101,19 @@ void Creature::Inventory() const
 
 	if(items.size() == 0)
 	{
-		std::cout << name << " does not own any items\n";
+		std::cout << getName() << " does not own any items\n";
 		return;
 	}
 
-	std::cout << "\n" << name << " owns:\n";
+	std::cout << "\n" << getName() << " owns:\n";
 	for(std::list<Entity*>::const_iterator it = items.begin(); it != items.cend(); ++it)
 	{
 		if(*it == weapon)
-			std::cout << (*it)->name << " (as weapon)\n";
+			std::cout << (*it)->getName() << " (as weapon)\n";
 		else if(*it == armour)
-			std::cout << (*it)->name << " (as armour)\n";
+			std::cout << (*it)->getName() << " (as armour)\n";
 		else
-			std::cout << (*it)->name << "\n";
+			std::cout << (*it)->getName() << "\n";
 	}
 }
 
@@ -128,7 +128,7 @@ bool Creature::Equip(const std::vector<std::string>& args)
 	if(item == NULL)
 		return false;
 
-	switch(item->type)
+	switch(item->getType())
 	{
 		case WEAPON:
 		weapon = item;
@@ -139,7 +139,7 @@ bool Creature::Equip(const std::vector<std::string>& args)
 	}
 
 	if(PlayerInRoom())
-		std::cout << name << " equips " << item->name << "...\n";
+		std::cout << getName() << " equips " << item->getName() << "...\n";
 
 	return true;
 }
@@ -163,7 +163,7 @@ bool Creature::UnEquip(const std::vector<std::string>& args)
 		return false;
 
 	if(PlayerInRoom())
-		std::cout << name << " un-equips " << item->name << "...\n";
+		std::cout << getName() << " un-equips " << item->getName() << "...\n";
 
 	return true;
 }
@@ -208,7 +208,7 @@ bool Creature::Lock(const std::vector<std::string>& args)
 		return false;
 
 	if(PlayerInRoom())
-		std::cout << "\n" << name << "locks " << exit->GetNameFrom((Room*)parent) << "...\n";
+		std::cout << "\n" << getName() << "locks " << exit->GetNameFrom((Room*)getParentRef()) << "...\n";
 
 	exit->lock();
 
@@ -232,7 +232,7 @@ bool Creature::UnLock(const std::vector<std::string>& args)
 		return false;
 
 	if(PlayerInRoom())
-		std::cout << "\n" << name << "unlocks " << exit->GetNameFrom((Room*) parent) << "...\n";
+		std::cout << "\n" << getName() << "unlocks " << exit->GetNameFrom((Room*)getParentRef()) << "...\n";
 
 	exit->unlock();
 
@@ -251,9 +251,9 @@ bool Creature::Drop(const std::vector<std::string>& args)
 		return false;
 
 	if(PlayerInRoom())
-		std::cout << name << " drops " << item->name << "...\n";
+		std::cout << getName() << " drops " << item->getName() << "...\n";
 	
-	item->ChangeParentTo(parent);
+	item->ChangeParentTo(getParentRef());
 
 	return true;
 }
@@ -261,13 +261,13 @@ bool Creature::Drop(const std::vector<std::string>& args)
 // ----------------------------------------------------
 Room* Creature::GetRoom() const
 {
-	return (Room*)parent;
+	return (Room*)getParentRef();
 }
 
 // ----------------------------------------------------
 bool Creature::PlayerInRoom() const
 {
-	return parent->Find(PLAYER) != NULL;
+	return getParentRef()->Find(PLAYER) != NULL;
 }
 
 // ----------------------------------------------------
@@ -281,7 +281,7 @@ void Creature::Tick()
 {
 	if(combat_target != NULL)
 	{
-		if(parent->Find(combat_target) == true)
+		if(getParentRef()->Find(combat_target) == true)
 			MakeAttack();
 		else
 			combat_target = NULL;
@@ -291,13 +291,13 @@ void Creature::Tick()
 // ----------------------------------------------------
 bool Creature::Attack(const std::vector<std::string>& args)
 {
-	Creature *target = (Creature*)parent->Find(args[1], CREATURE);
+	Creature *target = (Creature*)getParentRef()->Find(args[1], CREATURE);
 
 	if(target == NULL)
 		return false;
 
 	combat_target = target;
-	std::cout << "\n" << name << " attacks " << target->name << "!\n";
+	std::cout << "\n" << getName() << " attacks " << target->getName() << "!\n";
 	return true;
 }
 
@@ -313,7 +313,7 @@ int Creature::MakeAttack()
 	int result = (weapon) ? weapon->GetValue() : Roll(min_damage, max_damage);
 
 	if(PlayerInRoom())
-		std::cout << name << " attacks " << combat_target->name << " for " << result << "\n";
+		std::cout << getName() << " attacks " << combat_target->getName() << " for " << result << "\n";
 
 	combat_target->ReceiveAttack(result);
 
@@ -333,7 +333,7 @@ int Creature::ReceiveAttack(int damage)
 	hit_points_ -= received;
 
 	if(PlayerInRoom())
-		std::cout << name << " is hit for " << received << " damage (" << prot << " blocked) \n";
+		std::cout << getName() << " is hit for " << received << " damage (" << prot << " blocked) \n";
 
 	if(IsAlive() == false)
 		Die();
@@ -345,13 +345,13 @@ int Creature::ReceiveAttack(int damage)
 void Creature::Die()
 {
 	if(PlayerInRoom())
-		std::cout << name << " dies.\n";
+		std::cout << getName() << " dies.\n";
 }
 
 // ----------------------------------------------------
 bool Creature::Loot(const std::vector<std::string>& args)
 {
-	Creature *target = (Creature*)parent->Find(args[1], CREATURE);
+	Creature *target = (Creature*)getParentRef()->Find(args[1], CREATURE);
 
 	if(target == NULL && target->IsAlive() == false)
 		return false;
@@ -365,7 +365,7 @@ bool Creature::Loot(const std::vector<std::string>& args)
 		i->ChangeParentTo(this);
 	}
 
-	std::cout << "\n" << name << " loots " << target->name << "'s corpse\n";
+	std::cout << "\n" << getName() << " loots " << target->getName() << "'s corpse\n";
 
 	return true;
 }
@@ -374,9 +374,9 @@ bool Creature::Loot(const std::vector<std::string>& args)
 void Creature::Stats() const
 {
 	std::cout << "\nHit Points: " << hit_points_;
-	std::cout << "\nAttack: (" << ((weapon) ? weapon->name : "no weapon") << ") ";
+	std::cout << "\nAttack: (" << ((weapon) ? weapon->getName() : "no weapon") << ") ";
 	std::cout << ((weapon) ? weapon->getMinValue() : min_damage) << "-" << ((weapon) ? weapon->getMaxValue() : max_damage);
-	std::cout << "\nProtection: (" << ((armour) ? armour->name : "no armour") << ") ";
+	std::cout << "\nProtection: (" << ((armour) ? armour->getName() : "no armour") << ") ";
 	std::cout << ((armour) ? armour->getMinValue() : min_protection) << "-" << ((armour) ? armour->getMaxValue() : max_protection);
 	std::cout << "\n";
 }

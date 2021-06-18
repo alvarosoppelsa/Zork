@@ -8,7 +8,7 @@
 Item::Item(const char* title, const char* description, Entity* parent, ItemType item_type, bool hidden_) :
 Entity(title, description, parent), item_type_(item_type)
 {
-	type = ITEM;
+	this->setType(ITEM);
 	min_value_ = max_value_ = 0;
 }
 
@@ -19,8 +19,8 @@ Item::~Item()
 // ----------------------------------------------------
 void Item::Look() const
 {
-	std::cout << "\n" << name << "\n";
-	std::cout << description << "\n";
+	std::cout << "\n" << getName() << "\n";
+	std::cout << getDescription() << "\n";
 
 	std::list<Entity*> stuff;
 	FindAll(ITEM, stuff);
@@ -29,7 +29,7 @@ void Item::Look() const
 	{
 		std::cout << "It contains: " << "\n";
 		for(std::list<Entity*>::const_iterator it = stuff.begin(); it != stuff.cend(); ++it)
-			std::cout << (*it)->name << "\n";
+			std::cout << (*it)->getName() << "\n";
 	}
 }
 

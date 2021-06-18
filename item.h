@@ -10,7 +10,8 @@ enum ItemType
 {
     COMMON,
     WEAPON,
-	TOOL
+	TOOL,
+    BAG
 };
 
 class Item : public Entity

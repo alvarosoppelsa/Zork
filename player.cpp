@@ -9,7 +9,7 @@
 Player::Player(const char* title, const char* description, Room* room) :
 Creature(title, description, room)
 {
-	type = PLAYER;
+	this->setType(PLAYER);
 }
 
 // ----------------------------------------------------
@@ -22,9 +22,11 @@ void Player::Look(const std::vector<std::string>& args) const
 {
 	if(args.size() > 1)
 	{
-		for(std::list<Entity*>::const_iterator it = parent->container.begin(); it != parent->container.cend(); ++it)
+		for(std::list<Entity*>::const_iterator it = 
+            getParentRef()->getContainerRef().begin(); it != getParentRef()->getContainerRef().cend(); ++it)
 		{
-			if(Same((*it)->name, args[1]) || ((*it)->type == EXIT && Same(args[1], ((Exit*)(*it))->GetNameFrom((Room*)parent))))
+			if(Same((*it)->getName(), args[1]) || 
+                ((*it)->getType() == EXIT && Same(args[1], ((Exit*)(*it))->GetNameFrom((Room*)getParentRef()))))
 			{
 				(*it)->Look();
 				return;
@@ -33,13 +35,13 @@ void Player::Look(const std::vector<std::string>& args) const
 
 		if(Same(args[1], "me"))
 		{
-			std::cout << "\n" << name << "\n";
-			std::cout << description << "\n";
+			std::cout << "\n" << this->getName() << "\n";
+			std::cout << this->getDescription() << "\n";
 		}
 	}
 	else
 	{
-		parent->Look();
+		getParentRef()->Look();
 	}
 }
 
@@ -60,9 +62,9 @@ bool Player::Go(const std::vector<std::string>& args)
 		return false;
 	}
 
-	std::cout << "\nYou take direction " << exit->GetNameFrom((Room*) parent) << "...\n";
-	ChangeParentTo(exit->GetDestinationFrom((Room*) parent));
-	parent->Look();
+	std::cout << "\nYou take direction " << exit->GetNameFrom((Room*)getParentRef()) << "...\n";
+	ChangeParentTo(exit->GetDestinationFrom((Room*)getParentRef()));
+    getParentRef()->Look();
 
 	return true;
 }
@@ -73,7 +75,7 @@ bool Player::Take(const std::vector<std::string>& args)
 {
 	if(args.size() == 4)
 	{
-		Item* item = (Item*)parent->Find(args[3], ITEM);
+		Item* item = (Item*)getParentRef()->Find(args[3], ITEM);
 
 		// we could pick something from a container in our inventory ...
 		if(item == NULL)
@@ -89,16 +91,16 @@ bool Player::Take(const std::vector<std::string>& args)
 
 		if(subitem == NULL)
 		{
-			std::cout << "\n" << item->name << " does not contain '" << args[1] << "'.\n";
+			std::cout << "\n" << item->getName() << " does not contain '" << args[1] << "'.\n";
 			return false;
 		}
 
-		std::cout << "\nYou take " << subitem->name << " from " << item->name << ".\n";
+		std::cout << "\nYou take " << subitem->getName() << " from " << item->getName() << ".\n";
 		subitem->ChangeParentTo(this);
 	}
 	else if(args.size() == 2)
 	{
-		Item* item = (Item*)parent->Find(args[1], ITEM);
+		Item* item = (Item*)getParentRef()->Find(args[1], ITEM);
 
 		if(item == NULL)
 		{
@@ -106,7 +108,7 @@ bool Player::Take(const std::vector<std::string>& args)
 			return false;
 		}
 
-		std::cout << "\nYou take " << item->name << ".\n";
+		std::cout << "\nYou take " << item->getName() << ".\n";
 		item->ChangeParentTo(this);
 	}
 
@@ -128,11 +130,11 @@ void Player::Inventory() const
 	for(std::list<Entity*>::const_iterator it = items.begin(); it != items.cend(); ++it)
 	{
 		if(*it == weapon)
-			std::cout << "\n" << (*it)->name << " (as weapon)";
+			std::cout << "\n" << (*it)->getName() << " (as weapon)";
 		else if(*it == armour)
-			std::cout << "\n" << (*it)->name << " (as armour)";
+			std::cout << "\n" << (*it)->getName() << " (as armour)";
 		else
-			std::cout << "\n" << (*it)->name;
+			std::cout << "\n" << (*it)->getName();
 	}
 
 	std::cout << "\n";
@@ -151,8 +153,8 @@ bool Player::Drop(const std::vector<std::string>& args)
 			return false;
 		}
 
-		std::cout << "\nYou drop " << item->name << "...\n";
-		item->ChangeParentTo(parent);
+		std::cout << "\nYou drop " << item->getName() << "...\n";
+		item->ChangeParentTo(getParentRef());
 
 		return true;
 	}
@@ -166,7 +168,7 @@ bool Player::Drop(const std::vector<std::string>& args)
 			return false;
 		}
 
-		Item* container = (Item*)parent->Find(args[3], ITEM);
+		Item* container = (Item*)getParentRef()->Find(args[3], ITEM);
 
 		if(container == NULL)
 		{
@@ -175,7 +177,7 @@ bool Player::Drop(const std::vector<std::string>& args)
 			return false;
 		}
 
-		std::cout << "\nYou put " << item->name << " into " << container->name << ".\n";
+		std::cout << "\nYou put " << item->getName() << " into " << container->getName() << ".\n";
 		item->ChangeParentTo(container);
 
 		return true;
@@ -205,12 +207,16 @@ bool Player::Equip(const std::vector<std::string>& args)
 		armour = item;
 		break;
 
+    case BAG:
+        armour = item;
+        break;
+
 	default:
-		std::cout << "\n" << item->name << " cannot be equipped.\n";
+		std::cout << "\n" << item->getName() << " cannot be equipped.\n";
 		return false;
 	}
 		
-	std::cout << "\nYou equip " << item->name << "...\n";
+	std::cout << "\nYou equip " << item->getName() << "...\n";
 
 	return true;
 }
@@ -225,7 +231,7 @@ bool Player::UnEquip(const std::vector<std::string>& args)
 
 	if(item == NULL)
 	{
-		std::cout << "\n" << item->name << " is not in your inventory.\n";
+		std::cout << "\n" << item->getName() << " is not in your inventory.\n";
 		return false;
 	}
 
@@ -235,11 +241,11 @@ bool Player::UnEquip(const std::vector<std::string>& args)
 		armour = NULL;
 	else
 	{
-		std::cout << "\n" << item->name << " is not equipped.\n";
+		std::cout << "\n" << item->getName() << " is not equipped.\n";
 		return false;
 	}
 
-	std::cout << "\nYou un-equip " << item->name << "...\n";
+	std::cout << "\nYou un-equip " << item->getName() << "...\n";
 
 	return true;
 }
@@ -247,7 +253,7 @@ bool Player::UnEquip(const std::vector<std::string>& args)
 // ----------------------------------------------------
 bool Player::Examine(const std::vector<std::string>& args) const
 {
-	Creature *target = (Creature*)parent->Find(args[1], CREATURE);
+	Creature *target = (Creature*)getParentRef()->Find(args[1], CREATURE);
 
 	if(target == NULL)
 	{
@@ -264,7 +270,7 @@ bool Player::Examine(const std::vector<std::string>& args) const
 // ----------------------------------------------------
 bool Player::Attack(const std::vector<std::string>& args)
 {
-	Creature *target = (Creature*)parent->Find(args[1], CREATURE);
+	Creature *target = (Creature*)getParentRef()->Find(args[1], CREATURE);
 
 	if(target == NULL)
 	{
@@ -273,14 +279,14 @@ bool Player::Attack(const std::vector<std::string>& args)
 	}
 
 	combat_target = target;
-	std::cout << "\nYou jump to attack " << target->name << "!\n";
+	std::cout << "\nYou jump to attack " << target->getName() << "!\n";
 	return true;
 }
 
 // ----------------------------------------------------
 bool Player::Loot(const std::vector<std::string>& args)
 {
-	Creature *target = (Creature*)parent->Find(args[1], CREATURE);
+	Creature *target = (Creature*)getParentRef()->Find(args[1], CREATURE);
 
 	if(target == NULL)
 	{
@@ -290,7 +296,7 @@ bool Player::Loot(const std::vector<std::string>& args)
 
 	if(target->IsAlive() == true)
 	{
-		std::cout << "\n" << target->name << " cannot be looted until it is killed.\n";
+		std::cout << "\n" << target->getName() << " cannot be looted until it is killed.\n";
 		return false;
 	}
 
@@ -299,17 +305,17 @@ bool Player::Loot(const std::vector<std::string>& args)
 
 	if(items.size() > 0)
 	{
-		std::cout << "\nYou loot " << target->name << "'s corpse:\n";
+		std::cout << "\nYou loot " << target->getName() << "'s corpse:\n";
 
 		for(std::list<Entity*>::const_iterator it = items.begin(); it != items.cend(); ++it)
 		{
 			Item* i = (Item*)(*it);
-			std::cout << "You find: " << i->name << "\n";
+			std::cout << "You find: " << i->getName() << "\n";
 			i->ChangeParentTo(this);
 		}
 	}
 	else
-		std::cout << "\nYou loot " << target->name << "'s corpse, but find nothing there.\n";
+		std::cout << "\nYou loot " << target->getName() << "'s corpse, but find nothing there.\n";
 
 	return true;
 }
@@ -344,11 +350,11 @@ bool Player::Lock(const std::vector<std::string>& args)
 
 	if(exit->getKey() != item)
 	{
-		std::cout << "\nItem '" << item->name << "' is not the key for " << exit->GetNameFrom((Room*)parent) << ".\n";
+		std::cout << "\nItem '" << item->getName() << "' is not the key for " << exit->GetNameFrom((Room*)getParentRef()) << ".\n";
 		return false;
 	}
 
-	std::cout << "\nYou lock " << exit->GetNameFrom((Room*)parent) << "...\n";
+	std::cout << "\nYou lock " << exit->GetNameFrom((Room*)getParentRef()) << "...\n";
 
 	exit->lock();
 
@@ -385,11 +391,11 @@ bool Player::UnLock(const std::vector<std::string>& args)
 
 	if(exit->getKey() != item)
 	{
-		std::cout << "\nKey '" << item->name << "' is not the key for " << exit->GetNameFrom((Room*)parent) << ".\n";
+		std::cout << "\nKey '" << item->getName() << "' is not the key for " << exit->GetNameFrom((Room*)getParentRef()) << ".\n";
 		return false;
 	}
 
-	std::cout << "\nYou unlock " << exit->GetNameFrom((Room*)parent) << "...\n";
+	std::cout << "\nYou unlock " << exit->GetNameFrom((Room*)getParentRef()) << "...\n";
 
 	exit->unlock();
 

@@ -9,7 +9,7 @@
 Room::Room(const char* title, const char* description, bool darkness) :
 Entity(title, description, NULL)
 {
-	type = ROOM;
+	this->setType(ROOM);
     darkness_ = darkness;
 }
 
@@ -21,13 +21,13 @@ Room::~Room()
 // ----------------------------------------------------
 void Room::Look() const
 {
-	std::cout << "\n" << name << "\n";
-	std::cout << description;
+	std::cout << "\n" << getName() << "\n";
+	std::cout << getDescription();
 
 	// List exits --
-	for(std::list<Entity*>::const_iterator it = container.begin(); it != container.cend(); ++it)
+	for(std::list<Entity*>::const_iterator it = getContainerRef().begin(); it != getContainerRef().cend(); ++it)
 	{
-		if((*it)->type == EXIT)
+		if((*it)->getType() == EXIT)
 		{
 			Exit* ex = (Exit*)*it;
 			std::cout << "\nDirection (" << ex->GetNameFrom(this) << ") you see " << ex->GetDestinationFrom(this)->getName();
@@ -35,11 +35,11 @@ void Room::Look() const
 	}
 
 	// List items --
-    for(std::list<Entity*>::const_iterator it = container.begin(); it != container.cend(); ++it)
+    for(std::list<Entity*>::const_iterator it = getContainerRef().begin(); it != getContainerRef().cend(); ++it)
 	{
         if (darkness_) break;
 
-		if((*it)->type == ITEM)
+		if((*it)->getType() == ITEM)
 		{
 			Item* item = (Item*)*it;
 			std::cout << "\nThere is an item here: " << item->getName();
@@ -47,9 +47,9 @@ void Room::Look() const
 	}
 
 	// List creatures --
-	for(std::list<Entity*>::const_iterator it = container.begin(); it != container.cend(); ++it)
+	for(std::list<Entity*>::const_iterator it = getContainerRef().begin(); it != getContainerRef().cend(); ++it)
 	{
-		if((*it)->type == CREATURE)
+		if((*it)->getType() == CREATURE)
 		{
 			Creature* cr = (Creature*)*it;
 			std::cout << "\nThere is someone else here: " << cr->getName();
@@ -64,9 +64,9 @@ void Room::Look() const
 // ----------------------------------------------------
 Exit* Room::GetExit(const std::string& direction) const
 {
-	for(std::list<Entity*>::const_iterator it = container.begin(); it != container.cend(); ++it)
+	for(std::list<Entity*>::const_iterator it = getContainerRef().begin(); it != getContainerRef().cend(); ++it)
 	{
-		if((*it)->type == EXIT)
+		if((*it)->getType() == EXIT)
 		{
 			Exit* ex = (Exit*) *it;
 			if(Same(ex->GetNameFrom(this), direction))
