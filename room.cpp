@@ -60,35 +60,6 @@ void Room::Look() const
             break;
         }
     }
-	// List exits --
-	for(std::list<Entity*>::const_iterator it = container.begin(); it != container.cend(); ++it)
-	{
-		if((*it)->type == EXIT)
-		{
-
-		}
-	}
-
-	// List items --
-    for(std::list<Entity*>::const_iterator it = container.begin(); it != container.cend(); ++it)
-	{
-        if (darkness_) break;
-
-		if((*it)->type == ITEM)
-		{
-
-		}
-	}
-
-    // List puzzles --
-
-	// List creatures --
-	for(std::list<Entity*>::const_iterator it = container.begin(); it != container.cend(); ++it)
-	{
-		if((*it)->type == CREATURE)
-		{
-		}
-	}
 
 	std::cout << "\n";
 }
