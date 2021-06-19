@@ -10,6 +10,7 @@ Player::Player(const char* title, const char* description, Room* room) :
 Creature(title, description, room)
 {
 	type = PLAYER;
+    item_taken_ = NULL;
 }
 
 // ----------------------------------------------------
@@ -31,12 +32,25 @@ void Player::Look(const std::vector<std::string>& args) const
 			}
 		}
 
+        for (auto it : container)
+        {
+            if (Same(it->name, args[1]))
+            {
+                it->Look();
+                return;
+            }
+        }
+
 		if(Same(args[1], "me"))
 		{
 			std::cout << "\n" << name << "\n";
 			std::cout << description << "\n";
 		}
 	}
+    else if (item_taken_ != NULL && item_taken_->getItemType() == LIGHT)
+    {
+        GetRoom()->LookFull();
+    }
 	else
 	{
 		parent->Look();
@@ -62,9 +76,16 @@ bool Player::Go(const std::vector<std::string>& args)
 
 	std::cout << "\nYou take direction " << exit->GetNameFrom((Room*) parent) << "...\n";
 	ChangeParentTo(exit->GetDestinationFrom((Room*) parent));
-	parent->Look();
 
-	return true;
+    if (item_taken_ != NULL && item_taken_->getItemType() == LIGHT)
+    {
+        GetRoom()->LookFull();
+    }
+    else
+    {
+        parent->Look();
+    }
+    return true;
 }
 
 
@@ -95,6 +116,7 @@ bool Player::Take(const std::vector<std::string>& args)
 
 		std::cout << "\nYou take " << subitem->name << " from " << item->name << ".\n";
 		subitem->ChangeParentTo(this);
+        item_taken_ = item;
 	}
 	else if(args.size() == 2)
 	{
@@ -108,6 +130,7 @@ bool Player::Take(const std::vector<std::string>& args)
 
 		std::cout << "\nYou take " << item->name << ".\n";
 		item->ChangeParentTo(this);
+        item_taken_ = item;
 	}
 
 	return false;
@@ -129,8 +152,8 @@ void Player::Inventory() const
 	{
 		if(*it == weapon)
 			std::cout << "\n" << (*it)->name << " (as weapon)";
-		else if(*it == armour)
-			std::cout << "\n" << (*it)->name << " (as armour)";
+		else if(*it == bag)
+			std::cout << "\n" << (*it)->name << " (as bag)";
 		else
 			std::cout << "\n" << (*it)->name;
 	}
@@ -152,6 +175,7 @@ bool Player::Drop(const std::vector<std::string>& args)
 		}
 
 		std::cout << "\nYou drop " << item->name << "...\n";
+        item_taken_ = NULL;
 		item->ChangeParentTo(parent);
 
 		return true;
@@ -162,7 +186,7 @@ bool Player::Drop(const std::vector<std::string>& args)
 
 		if(item == NULL)
 		{
-			std::cout << "\nCan not find '" << args[1] << "' in your inventory.\n";
+			std::cout << "\nCannot find '" << args[1] << "' in your inventory.\n";
 			return false;
 		}
 
@@ -171,12 +195,22 @@ bool Player::Drop(const std::vector<std::string>& args)
 		if(container == NULL)
 		{
 			container = (Item*)Find(args[3], ITEM);
-			std::cout << "\nCan not find '" << args[3] << "' in your inventory or in the room.\n";
-			return false;
+            if (container == NULL)
+            {
+                std::cout << "\nCannot find '" << args[3] << "' in your inventory or in the room.\n";
+                return false;
+            }
+            else if (container->getItemType() != BAG)
+            {
+                std::cout << "\nAm I thinking to store a '" << args[1] << "' in a " << args[3] 
+                          << "?\n I'm losing my mind...\n";
+                return false;
+            }
 		}
 
 		std::cout << "\nYou put " << item->name << " into " << container->name << ".\n";
-		item->ChangeParentTo(container);
+        item_taken_ = NULL;
+        item->ChangeParentTo(container);
 
 		return true;
 	}
@@ -198,13 +232,11 @@ bool Player::Equip(const std::vector<std::string>& args)
 	switch(item->getItemType())
 	{
 	case WEAPON:
-		weapon = item;
-		break;
-
-	case TOOL:
-		armour = item;
-		break;
-
+		 weapon = item;
+		 break;
+    case BAG:
+         bag = item;
+         break;
 	default:
 		std::cout << "\n" << item->name << " cannot be equipped.\n";
 		return false;
@@ -231,8 +263,8 @@ bool Player::UnEquip(const std::vector<std::string>& args)
 
 	if(item == weapon)
 		weapon = NULL;
-	else if(item == armour)
-		armour = NULL;
+	else if(item == bag)
+		bag = NULL;
 	else
 	{
 		std::cout << "\n" << item->name << " is not equipped.\n";

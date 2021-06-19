@@ -12,7 +12,7 @@ Entity(title, description, (Entity*)room)
 	type = CREATURE;
 	hit_points_ = 1;
 	min_damage = max_damage = min_protection = max_protection = 0;
-	weapon = armour = NULL;
+	weapon = bag = NULL;
 	combat_target = NULL;
 }
 
@@ -110,8 +110,8 @@ void Creature::Inventory() const
 	{
 		if(*it == weapon)
 			std::cout << (*it)->name << " (as weapon)\n";
-		else if(*it == armour)
-			std::cout << (*it)->name << " (as armour)\n";
+		else if(*it == bag)
+			std::cout << (*it)->name << " (as bag)\n";
 		else
 			std::cout << (*it)->name << "\n";
 	}
@@ -158,7 +158,7 @@ bool Creature::UnEquip(const std::vector<std::string>& args)
 	if(item == weapon)
 		weapon = NULL;
 	else if(item == weapon)
-		armour = NULL;
+		bag = NULL;
 	else
 		return false;
 
@@ -185,7 +185,7 @@ bool Creature::AutoEquip()
 		if(i->getItemType() == WEAPON)
 			weapon = i;
 		if(i->getItemType() == TOOL)
-			armour = i;
+			bag = i;
 	}
 
 	return true;
@@ -327,13 +327,13 @@ int Creature::MakeAttack()
 // ----------------------------------------------------
 int Creature::ReceiveAttack(int damage)
 {
-	int prot = (armour) ? armour->GetValue() : Roll(min_protection, max_protection);
-	int received = damage - prot;
+	
+	int received = damage;
 
 	hit_points_ -= received;
 
 	if(PlayerInRoom())
-		std::cout << name << " is hit for " << received << " damage (" << prot << " blocked) \n";
+		std::cout << name << " is hit for " << received << " damage (" << " blocked) \n";
 
 	if(IsAlive() == false)
 		Die();
@@ -376,7 +376,5 @@ void Creature::Stats() const
 	std::cout << "\nHit Points: " << hit_points_;
 	std::cout << "\nAttack: (" << ((weapon) ? weapon->name : "no weapon") << ") ";
 	std::cout << ((weapon) ? weapon->getMinValue() : min_damage) << "-" << ((weapon) ? weapon->getMaxValue() : max_damage);
-	std::cout << "\nProtection: (" << ((armour) ? armour->name : "no armour") << ") ";
-	std::cout << ((armour) ? armour->getMinValue() : min_protection) << "-" << ((armour) ? armour->getMaxValue() : max_protection);
 	std::cout << "\n";
 }

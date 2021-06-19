@@ -15,12 +15,9 @@ public:
 	~Room();
 
 	void Look() const;
+    void LookFull();
 
 	Exit* GetExit(const std::string& direction) const;
-
-protected:
-    void illuminate() { darkness_ = false; };
-    void darken()     { darkness_ = true; }
 
 private:
     bool darkness_;

@@ -3,9 +3,9 @@
 #include "Exit.h"
 
 // ----------------------------------------------------
-Exit::Exit(const char* name, const char* opposite_name, const char* description, Room* origin, Room* destination, bool one_way) :
+Exit::Exit(const char* name, const char* opposite_name, const char* description, Room* origin, Room* destination, bool one_way, ExitType exit_type, std::string message) :
 Entity(name, description, (Entity*)origin),
-closed_(false), locked_(false), key_(NULL), one_way_(one_way), destination_(destination), opposite_name_(opposite_name)
+closed_(false), locked_(false), key_(NULL), one_way_(one_way), destination_(destination), opposite_name_(opposite_name), exit_type_(exit_type), message_(message)
 {
 	type = EXIT;
 
@@ -46,4 +46,13 @@ Room* Exit::GetDestinationFrom(const Room* room) const
         return (Room*)parent;
 
     return NULL;
+}
+
+void Exit::unlock()
+{
+    locked_ = false;
+    if (exit_type_ == MUTABLE)
+    {
+        description = message_;
+    }
 }
