@@ -7,6 +7,7 @@
 #include "room.h"
 #include "player.h"
 #include "world.h"
+#include "puzzle.h"
 
 // ----------------------------------------------------
 World::World()
@@ -14,7 +15,7 @@ World::World()
 	tick_timer = clock();
 
 	// Rooms ----
-	Room* crew_rest   = new Room("Crew bedrooms","It's all dark here!", true);
+	Room* crew_rest   = new Room("Crew's Room","It's all dark here!", true);
 	Room* hallway     = new Room("Hallway", "Can't see anyone. Something is not right...");
 	Room* warehouse   = new Room("Warehouse", "Maybe I can find some useful stuff");
     Room* engine      = new Room("Engine Room", "I hate the smell of the engine");
@@ -25,7 +26,7 @@ World::World()
 	Exit* ex2 = new Exit("left", "right", "Someone left this open", hallway, warehouse);
     Exit* ex3 = new Exit("forward", "back", "An electric door... without power will be impossible to open", hallway, control, true);
     ex3->lock();
-    Exit* ex4 = new Exit("right", "left", "This door always stucks", hallway, engine);
+    Exit* ex4 = new Exit("right", "left", "This door always stucks", hallway, engine, false, MUTABLE, "Restart power pin: 753148");
     ex4->lock();
     Exit* ex5 = new Exit("hatch", "control", "I don't want to open that", control, space);
     ex5->lock();
@@ -48,11 +49,18 @@ World::World()
 	entities.push_back(butler);
     */
 	// Items -----
-	Item* backpack = new Item("Backpack", "My old backpack", crew_rest);
-    Item* flashlight = new Item("Flashlight", "This could help me to see in dark places", warehouse, TOOL);
+	Item* backpack   = new Item("Backpack", "My old backpack", crew_rest, BAG);
+    Item* wrench     = new Item("Wrench", "An always useful tool", backpack, TOOL);
+    Item* flashlight = new Item("Flashlight", "This could help me to see in dark places", warehouse, LIGHT);
     
     entities.push_back(backpack);
+    entities.push_back(wrench);
     entities.push_back(flashlight);
+
+    ex4->setKey(wrench);
+
+    // Puzzles -----
+    Puzzle* keypad = new Puzzle("Keypad", "\"Enter pin to restart airship power\"", engine, "753148", ex3);
 
 	// Player ----
 	player = new Player("Lieutenant E.R.", "You better figure it out whats going on here", crew_rest);

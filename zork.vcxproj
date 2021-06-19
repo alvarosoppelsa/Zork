@@ -84,6 +84,7 @@
     <ClCompile Include="item.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="player.cpp" />
+    <ClCompile Include="puzzle.cpp" />
     <ClCompile Include="room.cpp" />
     <ClCompile Include="world.cpp" />
   </ItemGroup>
@@ -94,6 +95,7 @@
     <ClInclude Include="globals.h" />
     <ClInclude Include="item.h" />
     <ClInclude Include="player.h" />
+    <ClInclude Include="puzzle.h" />
     <ClInclude Include="room.h" />
     <ClInclude Include="world.h" />
   </ItemGroup>

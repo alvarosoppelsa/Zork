@@ -43,19 +43,20 @@ public:
     int getMaxProtection() const { return max_protection; }
     Creature* getCombatTarget() const { return combat_target; }
     Item* getWeapon() const { return weapon; }
-    Item* getArmourWeapon() const { return armour; }
+    Item* getBag() const { return bag; }
 
     void setHitPoints(int hit_points) { hit_points_ = hit_points; }
 
 protected:
-	int hit_points_;
+    int hit_points_;
 	int min_damage;
 	int max_damage;
 	int min_protection;
 	int max_protection;
 	Creature* combat_target;
 	Item* weapon;
-	Item* armour;
+	Item* bag;
+
 };
 
 #endif //__Creature__

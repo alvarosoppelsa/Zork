@@ -22,7 +22,8 @@ public:
 	bool Lock(const std::vector<std::string>& args);
 	bool UnLock(const std::vector<std::string>& args);
 
-public :
+private:
+    Item* item_taken_;
 
 };
 

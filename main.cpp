@@ -18,7 +18,8 @@ int main()
 	std::vector<std::string> args;
 	args.reserve(10);
 
-	std::cout << WHITE_ "Welcome to MyZork!\n" _WHITE;
+	std::cout << WHITE_ "The alarm of the airship just woke up you\n" <<
+                        "You better hurry to find a solution\n" _WHITE;
 	std::cout << "----------------\n";
 
 	World my_world;
