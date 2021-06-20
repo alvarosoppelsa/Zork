@@ -23,11 +23,18 @@ World::World()
     Room* control     = new Room("Control", "The rest of the crew is laying on the floor");
     Room* space       = new Room("Space", "Somewere in the Reticulum constellation");
 
+    entities.push_back(crew_rest);
+    entities.push_back(hallway);
+    entities.push_back(warehouse);
+    entities.push_back(engine);
+    entities.push_back(control);
+    entities.push_back(space);
+
 	Exit* ex1 = new Exit("forward", "back", "A door with a faint light on it", crew_rest, hallway);
 	Exit* ex2 = new Exit("left", "right", "Someone left this open", hallway, warehouse);
     Exit* ex3 = new Exit("up", "down", "An electric door... in an emergency, only opens after restarting power",
                          hallway, control, true);
-    //ex3->lock();
+    ex3->lock();
     Exit* ex4 = new Exit("right", "left", "This door always stucks", hallway, engine, false, MUTABLE, "Restart power pin: 753148");
     ex4->lock();
     Exit* ex5 = new Exit("hatch", "control", "I don't want to open that before tied myself somewhere", 
@@ -37,11 +44,18 @@ World::World()
     Exit* ex6 = new Exit("down", "space", "If I open that, surely I will be pushed to the outer space", warehouse, space);
     ex6->lock();
 
+    entities.push_back(ex1);
+    entities.push_back(ex2);
+    entities.push_back(ex3);
+    entities.push_back(ex4);
+    entities.push_back(ex5);
+    entities.push_back(ex6);
+
     // Creatures ----
 	Boss* alien = new Boss("Alien", "What the hell is that!!", control);
 	alien->setHitPoints(999);
 
-	//entities.push_back(alien);
+	entities.push_back(alien);
     
 	// Items -----
 	Item* backpack   = new Item("Backpack", "My old backpack", crew_rest, BAG);
@@ -51,6 +65,11 @@ World::World()
     claw->setMinValue(1);
     claw->setMaxValue(10);
 
+    entities.push_back(backpack);
+    entities.push_back(wrench);
+    entities.push_back(flashlight);
+    entities.push_back(claw);
+
     ex4->setKey(wrench);
     alien->AutoEquip();
 
@@ -58,9 +77,14 @@ World::World()
     Puzzle* keypad = new Puzzle("Keypad", "\"Enter pin to restart airship power\"", engine, "753148", ex3, PASSWORD);
     Puzzle* hook   = new Puzzle("Hook", "This should be strong enough to tie myself", control, "tie", ex5, ACTION);
 
+    entities.push_back(keypad);
+    entities.push_back(hook);
+
 	// Player ----
 	player = new Player("Lieutenant E.R.", "You better figure it out whats going on here", crew_rest);
 	player->setHitPoints(25);
+
+    entities.push_back(player);
 }
 
 // ----------------------------------------------------
