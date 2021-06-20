@@ -27,7 +27,7 @@ void Item::Look() const
 
 	if(stuff.size() > 0)
 	{
-		std::cout << "It contains: " << "\n";
+		std::cout << "\nIt contains: " << "\n";
 		for(std::list<Entity*>::const_iterator it = stuff.begin(); it != stuff.cend(); ++it)
 			std::cout << (*it)->name << "\n";
 	}

@@ -18,10 +18,10 @@ public:
 	bool UnEquip(const std::vector<std::string>& args);
 	bool Examine(const std::vector<std::string>& args) const;
 	bool Attack(const std::vector<std::string>& args);
-	bool Loot(const std::vector<std::string>& args);
 	bool Lock(const std::vector<std::string>& args);
 	bool UnLock(const std::vector<std::string>& args);
-    bool Enter(const std::vector<std::string>& args);
+    bool Solve(const std::vector<std::string>& args);
+    bool Open(const std::vector<std::string>& args);
 
 private:
     Item* item_taken_;

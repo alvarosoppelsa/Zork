@@ -61,7 +61,7 @@ int main()
 		{
 			args.clear();
 			player_input = "";
-			std::cout << "> ";
+			std::cout << "\n> ";
 		}
 	}
 

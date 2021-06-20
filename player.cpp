@@ -297,6 +297,12 @@ bool Player::Examine(const std::vector<std::string>& args) const
 // ----------------------------------------------------
 bool Player::Attack(const std::vector<std::string>& args)
 {
+    if (weapon == NULL)
+    {
+        std::cout << "\nI'm not going to attack without a weapon!\n";
+        return false;
+    }
+
 	Creature *target = (Creature*)parent->Find(args[1], CREATURE);
 
 	if(target == NULL)
@@ -307,43 +313,6 @@ bool Player::Attack(const std::vector<std::string>& args)
 
 	combat_target = target;
 	std::cout << "\nYou jump to attack " << target->name << "!\n";
-	return true;
-}
-
-// ----------------------------------------------------
-bool Player::Loot(const std::vector<std::string>& args)
-{
-	Creature *target = (Creature*)parent->Find(args[1], CREATURE);
-
-	if(target == NULL)
-	{
-		std::cout << "\n" << args[1] << " is not here.\n";
-		return false;
-	}
-
-	if(target->IsAlive() == true)
-	{
-		std::cout << "\n" << target->name << " cannot be looted until it is killed.\n";
-		return false;
-	}
-
-	std::list<Entity*> items;
-	target->FindAll(ITEM, items);
-
-	if(items.size() > 0)
-	{
-		std::cout << "\nYou loot " << target->name << "'s corpse:\n";
-
-		for(std::list<Entity*>::const_iterator it = items.begin(); it != items.cend(); ++it)
-		{
-			Item* i = (Item*)(*it);
-			std::cout << "You find: " << i->name << "\n";
-			i->ChangeParentTo(this);
-		}
-	}
-	else
-		std::cout << "\nYou loot " << target->name << "'s corpse, but find nothing there.\n";
-
 	return true;
 }
 
@@ -429,19 +398,29 @@ bool Player::UnLock(const std::vector<std::string>& args)
 	return true;
 }
 
-bool Player::Enter(const std::vector<std::string>& args)
+bool Player::Solve(const std::vector<std::string>& args)
 {
     Puzzle* puzzle = (Puzzle*)parent->Find(args[3], PUZZLE);
-    if (!parent)
+    if (!puzzle)
     {
-        std::cout << "\nThere isn't such a " << args[3] << ".\n";
+        std::cout << "\nSeems I cannot do nothing with '" << args[3] << "'\n";
         return false;
     }
-    if (!puzzle->EnterPassword(args[1]))
+    if (!puzzle->SolvePuzzle(args[1]))
     {
-        std::cout << "\nI can't believe I forgot it again! \nMust be written somewere...\n";
         return false;
     }
-    std::cout << "\nAlright!\n";
     return true;
 }
+
+bool Player::Open(const std::vector<std::string>& args)
+{
+    Exit* exit = (Exit*)parent->Find(args[1], EXIT);
+    if (!exit)
+    {
+        std::cout << "There's no exit with that name";
+    }
+    exit->open();
+    return false;
+}
+

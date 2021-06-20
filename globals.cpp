@@ -35,3 +35,13 @@ void Tokenize(const std::string& line, std::vector<std::string>& arguments)
 		arguments.push_back(std::string(begin, str));
 	} while(0 != *str++);
 }
+
+void RunEndGameAnimation()
+{
+    std::cout <<  "\n\n************************************************************\n"
+              <<  "\n           CONGRATULATIONS!!!!!!!\n"
+              <<  "\n The alien was push to the outer space!!!\n"
+              <<  "\n Now you can go back home, even there's no much crew left...\n"
+              <<  "************************************************************\n";
+    exit(0);
+}
