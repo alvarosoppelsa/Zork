@@ -19,7 +19,11 @@ mono_crash.*
 # Build results
 [Dd]ebug/
 [Dd]ebugPublic/
-[Rr]elease/
+# [Rr]elease/
+[Rr]elease/zork.tlog/
+[Rr]elease/*.obj
+[Rr]elease/*.pdb
+[Rr]elease/*.log
 [Rr]eleases/
 x64/
 x86/
