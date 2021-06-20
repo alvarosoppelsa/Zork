@@ -5,11 +5,6 @@
 #include "globals.h"
 #include "world.h"
 
-#define BACKSPACE "\033[D\033[K"
-
-#define WHITE_ "\033[1;36m"
-#define _WHITE "\033[0m"
-
 // -------------------------------------------------
 int main()
 {
@@ -18,8 +13,8 @@ int main()
 	std::vector<std::string> args;
 	args.reserve(10);
 
-	std::cout << WHITE_ "The alarm of the airship just woke up you\n" <<
-                        "You better hurry to find a solution\n" _WHITE;
+	std::cout << "The alarm of the airship just woke up you\n" <<
+                        "You better hurry to find a solution\n";
 	std::cout << "----------------\n";
 
 	World my_world;
@@ -36,7 +31,6 @@ int main()
 				if(player_input.length() > 0)
 				{
 					player_input.pop_back();
-					//std::cout << BACKSPACE;
 					std::cout << '\b';
 					std::cout << " ";
 					std::cout << '\b';
