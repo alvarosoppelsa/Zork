@@ -11,7 +11,7 @@ Puzzle::~Puzzle()
 {
 }
 
-bool Puzzle::CheckPassword(std::string password)
+bool Puzzle::EnterPassword(std::string password)
 {
     if (Same(password, password_))
     {

@@ -28,14 +28,13 @@ public:
     void setItemType(ItemType item_type) { item_type_ = item_type; }
     int getMinValue() const { return min_value_; }
     int getMaxValue() const { return max_value_; }
+    void setMinValue(int new_value) { min_value_ = new_value; }
+    void setMaxValue(int new_value) { max_value_ = new_value; }
 
-    bool isHidden() const { return hidden_; }
-    void hide(bool hidden) { hidden_ = hidden; }
 private:
 	int min_value_;
 	int max_value_;
 	ItemType item_type_;
-    bool hidden_;
 };
 
 #endif //__Item__

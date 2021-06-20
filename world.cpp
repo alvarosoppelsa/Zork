@@ -19,13 +19,13 @@ World::World()
 	Room* hallway     = new Room("Hallway", "Can't see anyone. Something is not right...");
 	Room* warehouse   = new Room("Warehouse", "Maybe I can find some useful stuff");
     Room* engine      = new Room("Engine Room", "I hate the smell of the engine");
-    Room* control     = new Room("Control", "");
-    Room* space       = new Room("Space", "");
+    Room* control     = new Room("Control", "The rest of the crew is laying on the floor");
+    Room* space       = new Room("Space", "Somewere in the Reticulum constellation");
 
 	Exit* ex1 = new Exit("forward", "back", "A door with a faint light on it", crew_rest, hallway);
 	Exit* ex2 = new Exit("left", "right", "Someone left this open", hallway, warehouse);
-    Exit* ex3 = new Exit("forward", "back", "An electric door... without power will be impossible to open", hallway, control, true);
-    ex3->lock();
+    Exit* ex3 = new Exit("up", "down", "An electric door... without power will be impossible to open", hallway, control, true);
+    //ex3->lock();
     Exit* ex4 = new Exit("right", "left", "This door always stucks", hallway, engine, false, MUTABLE, "Restart power pin: 753148");
     ex4->lock();
     Exit* ex5 = new Exit("hatch", "control", "I don't want to open that", control, space);
@@ -41,23 +41,28 @@ World::World()
 	entities.push_back(ex2);
     entities.push_back(ex3);
     entities.push_back(ex4);
-    /*
+    
 	// Creatures ----
-	Creature* butler = new Creature("Butler", "It's James, the house Butler.", house);
-	butler->hit_points = 10;
+	Creature* alien = new Creature("Alien", "What the hell is that!!", control);
+	alien->setHitPoints(999);
 
-	entities.push_back(butler);
-    */
+	entities.push_back(alien);
+    
 	// Items -----
 	Item* backpack   = new Item("Backpack", "My old backpack", crew_rest, BAG);
     Item* wrench     = new Item("Wrench", "An always useful tool", backpack, TOOL);
     Item* flashlight = new Item("Flashlight", "This could help me to see in dark places", warehouse, LIGHT);
-    
+    Item* claw       = new Item ("Claw", "", alien, WEAPON);
+    claw->setMinValue(1);
+    claw->setMaxValue(1);
+
     entities.push_back(backpack);
     entities.push_back(wrench);
     entities.push_back(flashlight);
+    entities.push_back(claw);
 
     ex4->setKey(wrench);
+    alien->AutoEquip();
 
     // Puzzles -----
     Puzzle* keypad = new Puzzle("Keypad", "\"Enter pin to restart airship power\"", engine, "753148", ex3);
@@ -80,13 +85,13 @@ World::~World()
 // ----------------------------------------------------
 bool World::Tick(std::vector<std::string>& args)
 {
-	bool ret = true;
+    bool ret = true;
 
 	if(args.size() > 0 && args[0].length() > 0)
 		ret = ParseCommand(args);
 
 	GameLoop();
-
+    
 	return ret;
 }
 
@@ -117,24 +122,24 @@ bool World::ParseCommand(std::vector<std::string>& args)
 			{
 				player->Look(args);
 			}
-			else if(Same(args[0], "north") || Same(args[0], "n"))
+			else if(Same(args[0], "forward") || Same(args[0], "f"))
 			{
-				(args.size() == 1) ? args.push_back("north") : args[1] = "north";
+				(args.size() == 1) ? args.push_back("forward") : args[1] = "forward";
 				player->Go(args);
 			}
-			else if(Same(args[0], "south") || Same(args[0], "s"))
+			else if(Same(args[0], "back") || Same(args[0], "b"))
 			{
-				(args.size() == 1) ? args.push_back("south") : args[1] = "south";
+				(args.size() == 1) ? args.push_back("back") : args[1] = "back";
 				player->Go(args);
 			}
-			else if(Same(args[0], "east") || Same(args[0], "e"))
+			else if(Same(args[0], "right") || Same(args[0], "r"))
 			{
-				(args.size() == 1) ? args.push_back("east") : args[1] = "east";
+				(args.size() == 1) ? args.push_back("right") : args[1] = "right";
 				player->Go(args);
 			}
-			else if(Same(args[0], "west") || Same(args[0], "w"))
+			else if(Same(args[0], "left") || Same(args[0], "l"))
 			{
-				(args.size() == 1) ? args.push_back("west") : args[1] = "west";
+				(args.size() == 1) ? args.push_back("left") : args[1] = "left";
 				player->Go(args);
 			}
 			else if(Same(args[0], "up") || Same(args[0], "u"))
@@ -223,6 +228,10 @@ bool World::ParseCommand(std::vector<std::string>& args)
 			{
 				player->Drop(args);
 			}
+            else if (Same(args[0], "enter") || Same(args[0], "pin"))
+            {
+                player->Enter(args);
+            }
 			else
 				ret = false;
 			break;
