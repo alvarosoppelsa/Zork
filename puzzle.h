@@ -13,7 +13,7 @@ public:
     Puzzle(const char* name, const char* description, Room* parent, std::string password, Exit* exit);
     virtual ~Puzzle();
 
-    bool CheckPassword(std::string password);
+    bool EnterPassword(std::string password);
 
 private:
     std::string password_;

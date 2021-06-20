@@ -25,13 +25,13 @@ void Creature::Look(const std::vector<std::string>& args) const
 {
 	if(IsAlive())
 	{
-		std::cout << name << "\n";
-		std::cout << description << "\n";
+		std::cout << "\n" << name << "\n";
+		std::cout << "\n" << description << "\n";
 	}
 	else
 	{
-		std::cout << name << "'s corpse\n";
-		std::cout << "Here lies dead: " << description << "\n";
+		std::cout << "\n" << name << "'s corpse\n";
+		std::cout << "\nHere lies dead: " << description << "\n";
 	}
 }
 
@@ -47,7 +47,7 @@ bool Creature::Go(const std::vector<std::string>& args)
 		return false;
 
 	if(PlayerInRoom())
-		std::cout << name << "goes " << args[1] << "...\n";
+		std::cout << "\n" << name << "goes " << args[1] << "...\n";
 
 	ChangeParentTo(exit->GetDestinationFrom((Room*) parent));
 
@@ -77,7 +77,7 @@ bool Creature::Take(const std::vector<std::string>& args)
 			return false;
 
 		if(PlayerInRoom())
-			std::cout << name << " looks into " << item->name << "...\n";
+			std::cout << "\n" << name << " looks into " << item->name << "...\n";
 
 		item = subitem;
 	}
@@ -86,7 +86,7 @@ bool Creature::Take(const std::vector<std::string>& args)
 		return false;
 
 	if(PlayerInRoom())
-		std::cout << name << " takes " << item->name << ".\n";
+		std::cout << "\n" << name << " takes " << item->name << ".\n";
 
 	item->ChangeParentTo(this);
 
@@ -101,7 +101,7 @@ void Creature::Inventory() const
 
 	if(items.size() == 0)
 	{
-		std::cout << name << " does not own any items\n";
+		std::cout << "\n" << name << " does not own any items\n";
 		return;
 	}
 
@@ -178,16 +178,13 @@ bool Creature::AutoEquip()
 	std::list<Entity*> items;
 	FindAll(ITEM, items);
 
-	for(std::list<Entity*>::const_iterator it = items.begin(); it != items.cend(); ++it)
-	{
-		Item* i = (Item*)(*it);
+    for (std::list<Entity*>::const_iterator it = items.begin(); it != items.cend(); ++it)
+    {
+        Item* i = (Item*)(*it);
 
-		if(i->getItemType() == WEAPON)
-			weapon = i;
-		if(i->getItemType() == TOOL)
-			bag = i;
-	}
-
+        if (i->getItemType() == WEAPON)
+            weapon = i;
+    }
 	return true;
 }
 

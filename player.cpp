@@ -4,6 +4,7 @@
 #include "exit.h"
 #include "item.h"
 #include "player.h"
+#include "puzzle.h"
 
 // ----------------------------------------------------
 Player::Player(const char* title, const char* description, Room* room) :
@@ -426,4 +427,21 @@ bool Player::UnLock(const std::vector<std::string>& args)
 	exit->unlock();
 
 	return true;
+}
+
+bool Player::Enter(const std::vector<std::string>& args)
+{
+    Puzzle* puzzle = (Puzzle*)parent->Find(args[3], PUZZLE);
+    if (!parent)
+    {
+        std::cout << "\nThere isn't such a " << args[3] << ".\n";
+        return false;
+    }
+    if (!puzzle->EnterPassword(args[1]))
+    {
+        std::cout << "\nI can't believe I forgot it again! \nMust be written somewere...\n";
+        return false;
+    }
+    std::cout << "\nAlright!\n";
+    return true;
 }

@@ -18,7 +18,7 @@ bool Same(const std::string& a, const char* b)
 
 int Roll(int min, int max)
 {
-	return (max > 0) ? min + (rand() % (max - min)) : 0;
+	return (max > 0) ? min + rand() % ((max + 1) - min) : 0;
 }
 
 void Tokenize(const std::string& line, std::vector<std::string>& arguments)

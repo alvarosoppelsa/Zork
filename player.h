@@ -21,6 +21,7 @@ public:
 	bool Loot(const std::vector<std::string>& args);
 	bool Lock(const std::vector<std::string>& args);
 	bool UnLock(const std::vector<std::string>& args);
+    bool Enter(const std::vector<std::string>& args);
 
 private:
     Item* item_taken_;
