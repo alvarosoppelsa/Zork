@@ -19,7 +19,7 @@ Entity::~Entity()
 // ----------------------------------------------------
 void Entity::Look() const
 {
-	std::cout << name << "\n";
+	std::cout << "\n" << name << "\n";
 	std::cout << description << "\n";
 }
 

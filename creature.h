@@ -2,6 +2,7 @@
 #define __Creature__
 
 #include <string>
+#include <vector>
 #include "entity.h"
 
 class Room;
@@ -29,7 +30,6 @@ public:
 	virtual int MakeAttack();
 	virtual int ReceiveAttack(int damage);
 	virtual void Die();
-	virtual bool Loot(const std::vector<std::string>& args);
 	virtual void Stats() const;
 
 	Room* GetRoom() const;

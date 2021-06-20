@@ -2,6 +2,7 @@
 #include "globals.h"
 #include "entity.h"
 #include "creature.h"
+#include "boss.h"
 #include "item.h"
 #include "exit.h"
 #include "room.h"
@@ -22,28 +23,36 @@ World::World()
     Room* control     = new Room("Control", "The rest of the crew is laying on the floor");
     Room* space       = new Room("Space", "Somewere in the Reticulum constellation");
 
-	Exit* ex1 = new Exit("forward", "back", "A door with a faint light on it", crew_rest, hallway);
-	Exit* ex2 = new Exit("left", "right", "Someone left this open", hallway, warehouse);
-    Exit* ex3 = new Exit("up", "down", "An electric door... without power will be impossible to open", hallway, control, true);
-    //ex3->lock();
-    Exit* ex4 = new Exit("right", "left", "This door always stucks", hallway, engine, false, MUTABLE, "Restart power pin: 753148");
-    ex4->lock();
-    Exit* ex5 = new Exit("hatch", "control", "I don't want to open that", control, space);
-    ex5->lock();
-
-	entities.push_back(crew_rest);
-	entities.push_back(hallway);
-	entities.push_back(warehouse);
+    entities.push_back(crew_rest);
+    entities.push_back(hallway);
+    entities.push_back(warehouse);
     entities.push_back(engine);
     entities.push_back(control);
+    entities.push_back(space);
 
-	entities.push_back(ex1);
-	entities.push_back(ex2);
+	Exit* ex1 = new Exit("forward", "back", "A door with a faint light on it", crew_rest, hallway);
+	Exit* ex2 = new Exit("left", "right", "Someone left this open", hallway, warehouse);
+    Exit* ex3 = new Exit("up", "down", "An electric door... in an emergency, only opens after restarting power",
+                         hallway, control, true);
+    ex3->lock();
+    Exit* ex4 = new Exit("right", "left", "This door always stucks", hallway, engine, false, MUTABLE, "Restart power pin: 753148");
+    ex4->lock();
+    Exit* ex5 = new Exit("hatch", "control", "I don't want to open that before tied myself somewhere", 
+                         control, space, false, MUTABLE, "Open the hatch is my only chance to come back home...");
+    ex5->lock();
+    ex5->setPush(true);
+    Exit* ex6 = new Exit("down", "space", "If I open that, surely I will be pushed to the outer space", warehouse, space);
+    ex6->lock();
+
+    entities.push_back(ex1);
+    entities.push_back(ex2);
     entities.push_back(ex3);
     entities.push_back(ex4);
-    
-	// Creatures ----
-	Creature* alien = new Creature("Alien", "What the hell is that!!", control);
+    entities.push_back(ex5);
+    entities.push_back(ex6);
+
+    // Creatures ----
+	Boss* alien = new Boss("Alien", "What the hell is that!!", control);
 	alien->setHitPoints(999);
 
 	entities.push_back(alien);
@@ -54,7 +63,7 @@ World::World()
     Item* flashlight = new Item("Flashlight", "This could help me to see in dark places", warehouse, LIGHT);
     Item* claw       = new Item ("Claw", "", alien, WEAPON);
     claw->setMinValue(1);
-    claw->setMaxValue(1);
+    claw->setMaxValue(10);
 
     entities.push_back(backpack);
     entities.push_back(wrench);
@@ -65,12 +74,17 @@ World::World()
     alien->AutoEquip();
 
     // Puzzles -----
-    Puzzle* keypad = new Puzzle("Keypad", "\"Enter pin to restart airship power\"", engine, "753148", ex3);
+    Puzzle* keypad = new Puzzle("Keypad", "\"Enter pin to restart airship power\"", engine, "753148", ex3, PASSWORD);
+    Puzzle* hook   = new Puzzle("Hook", "This should be strong enough to tie myself", control, "tie", ex5, ACTION);
+
+    entities.push_back(keypad);
+    entities.push_back(hook);
 
 	// Player ----
 	player = new Player("Lieutenant E.R.", "You better figure it out whats going on here", crew_rest);
 	player->setHitPoints(25);
-	entities.push_back(player);
+
+    entities.push_back(player);
 }
 
 // ----------------------------------------------------
@@ -198,10 +212,10 @@ bool World::ParseCommand(std::vector<std::string>& args)
 			{
 				player->Attack(args);
 			}
-			else if(Same(args[0], "loot") || Same(args[0], "lt"))
-			{
-				player->Loot(args);
-			}
+            else if (Same(args[0], "open") || Same(args[0], "op"))
+            {
+                player->Open(args);
+            }
 			else
 				ret = false;
 			break;
@@ -228,9 +242,13 @@ bool World::ParseCommand(std::vector<std::string>& args)
 			{
 				player->Drop(args);
 			}
-            else if (Same(args[0], "enter") || Same(args[0], "pin"))
+            else if (Same(args[0], "enter") || Same(args[0], "in"))
             {
-                player->Enter(args);
+                player->Solve(args);
+            }
+            else if (Same(args[0], "action") || Same(args[0], "do"))
+            {
+                player->Solve(args);
             }
 			else
 				ret = false;

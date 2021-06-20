@@ -24,7 +24,7 @@ public:
 	virtual void Look() const;
 	virtual void Tick();
 
-	void	ChangeParentTo(Entity* new_parent);
+	virtual void ChangeParentTo(Entity* new_parent);
 	bool    Find(Entity* entity) const;
 	Entity* Find(EntityType type) const;
 	Entity* Find(const std::string& name, EntityType type) const;

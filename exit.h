@@ -35,18 +35,21 @@ public:
     void unlock();
     void lock()   { locked_ = true; }
     void close()  { closed_ = true;  }
-    void open()   { closed_ = false; }
-    void setKey(Entity* key) { key_ = key; }
+    void open();
+    void setKey(Entity* key)     { key_ = key; }
+    void setPush(bool must_push) { push_when_open_ = must_push; };
 
 private :
 	bool one_way_;
 	bool closed_;
 	bool locked_;
-	std::string opposite_name_;
+    bool push_when_open_;
+    std::string opposite_name_;
     std::string message_;
 	Room* destination_;
 	Entity* key_;
     ExitType exit_type_;
+
 
 };
 

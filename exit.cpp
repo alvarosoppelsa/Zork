@@ -1,6 +1,7 @@
 #include <iostream>
 #include "room.h"
-#include "Exit.h"
+#include "exit.h"
+#include "creature.h"
 
 // ----------------------------------------------------
 Exit::Exit(const char* name, const char* opposite_name, const char* description, Room* origin, Room* destination, bool one_way, ExitType exit_type, std::string message) :
@@ -54,5 +55,28 @@ void Exit::unlock()
     if (exit_type_ == MUTABLE)
     {
         description = message_;
+    }
+}
+
+void Exit::open()
+{
+    if (locked_)
+    {
+        std::cout << "\nThe exit must be unlocked first\n";
+        return;
+    }
+    closed_ = false;
+    if (push_when_open_)
+    {
+        std::list<Entity*> creatures;
+        parent->FindAll(CREATURE, creatures);
+        for (auto it : creatures)
+        {
+            if (it->type == PLAYER)
+                continue;
+            Creature* creature = (Creature *)it;
+            creature->ChangeParentTo(destination_);
+        }
+        
     }
 }

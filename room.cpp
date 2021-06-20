@@ -23,7 +23,7 @@ Room::~Room()
 void Room::Look() const
 {
 	std::cout << "\n" << name << "\n";
-	std::cout << description;
+	std::cout << description << "\n";
 
     for (auto it : container)
     {

@@ -26,7 +26,7 @@ void Creature::Look(const std::vector<std::string>& args) const
 	if(IsAlive())
 	{
 		std::cout << "\n" << name << "\n";
-		std::cout << "\n" << description << "\n";
+		std::cout << description << "\n";
 	}
 	else
 	{
@@ -330,7 +330,7 @@ int Creature::ReceiveAttack(int damage)
 	hit_points_ -= received;
 
 	if(PlayerInRoom())
-		std::cout << name << " is hit for " << received << " damage (" << " blocked) \n";
+		std::cout << name << " is hit for " << received << " damage\n";
 
 	if(IsAlive() == false)
 		Die();
@@ -343,28 +343,6 @@ void Creature::Die()
 {
 	if(PlayerInRoom())
 		std::cout << name << " dies.\n";
-}
-
-// ----------------------------------------------------
-bool Creature::Loot(const std::vector<std::string>& args)
-{
-	Creature *target = (Creature*)parent->Find(args[1], CREATURE);
-
-	if(target == NULL && target->IsAlive() == false)
-		return false;
-
-	std::list<Entity*> items;
-	target->FindAll(ITEM, items);
-
-	for(std::list<Entity*>::const_iterator it = items.begin(); it != items.cend(); ++it)
-	{
-		Item* i = (Item*)(*it);
-		i->ChangeParentTo(this);
-	}
-
-	std::cout << "\n" << name << " loots " << target->name << "'s corpse\n";
-
-	return true;
 }
 
 // ----------------------------------------------------
